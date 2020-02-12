@@ -146,6 +146,21 @@ def main():
     canvas.place(x=0, y=0)
     label = Label(window, text="Player 1")
     label.place(x=20, y=250)
+    canvas.create_line(75, 86, 150, 28, fill='gray', dash=(4, 2))
+    canvas.create_line(150, 28, 225, 86, fill='gray', dash=(4, 2))
+    canvas.create_line(75, 86, 75, 144, fill='gray', dash=(4, 2))
+    canvas.create_line(225, 86, 225, 144, fill='gray', dash=(4, 2))
+    canvas.create_line(75, 144, 150, 202, fill='gray', dash=(4, 2))
+    canvas.create_line(225, 144, 150, 202, fill='gray', dash=(4, 2))
+    canvas.create_line(75, 86, 225, 86, fill='gray', dash=(4, 2))
+    canvas.create_line(75, 86, 150, 202, fill='gray', dash=(4, 2)   )
+    canvas.create_line(75, 144, 225, 144, fill='gray', dash=(4, 2))
+    canvas.create_line(150, 28, 225, 144, fill='gray', dash=(4, 2))
+    canvas.create_line(150, 28, 75, 144, fill='gray', dash=(4, 2))
+    canvas.create_line(225, 86, 150, 202, fill='gray', dash=(4, 2))
+    canvas.create_line(75, 86, 225, 144, fill='gray', dash=(4, 2))
+    canvas.create_line(75, 144, 225, 86, fill='gray', dash=(4, 2))
+    canvas.create_line(150, 28, 150, 202, fill='gray', dash=(4, 2))
 
 
     # Functionality
@@ -301,10 +316,10 @@ def main():
 
     path = "Helper.png"
 
-    img = ImageTk.PhotoImage(Image.open(path).resize((600,400), Image.ANTIALIAS))
+    img = ImageTk.PhotoImage(Image.open(path).resize((774,683), Image.ANTIALIAS))
 
     top = Toplevel(window, bg='red')
-    top.geometry('600x400')
+    top.geometry('774x683')
     top.title("Instruction")
     image = Label(top, image = img)
     image.pack(side="bottom", fill="both", expand="yes")
