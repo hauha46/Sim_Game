@@ -5,8 +5,8 @@ import pickle
 import numpy
 
 triangles = [['a','c','k'], ['a','i','o'], ['a','m','j'], ['a','b','g'], ['k', 'e', 'o'], ['k','h','j'], ['k','n','b'], ['o','f','j']
-             , ['o','l','b'], ['j','d','b'], ['c','e','i'], ['c','h','n'], ['c', 'g', 'm'], ['i','f','m'], ['i', 'l', 'g'], ['m','d','g']
-             , ['e','f','h'], ['e','l','n'], ['l','d','m'], ['f','d','l']]
+             , ['o','l','b'], ['j','d','b'], ['c','e','i'], ['c','h','m'], ['c', 'g', 'n'], ['i','f','m'], ['i', 'l', 'g'], ['m','d','g']
+             , ['e','f','h'], ['e','l','n'], ['l','d','k'], ['f','d','l']]
 # Initialize empty var
 available_lines = ['a','b', 'c', 'd','e','f','g','h','i','j','k','l','m','n','o']
 fixed_lines = ['a','b', 'c', 'd','e','f','g','h','i','j','k','l','m','n','o']
@@ -169,6 +169,21 @@ def main():
         canvas.delete("all")
         label = Label(window, text="Player 1")
         label.place(x=20, y=250)
+        canvas.create_line(75, 86, 150, 28, fill='gray', dash=(4, 2))
+        canvas.create_line(150, 28, 225, 86, fill='gray', dash=(4, 2))
+        canvas.create_line(75, 86, 75, 144, fill='gray', dash=(4, 2))
+        canvas.create_line(225, 86, 225, 144, fill='gray', dash=(4, 2))
+        canvas.create_line(75, 144, 150, 202, fill='gray', dash=(4, 2))
+        canvas.create_line(225, 144, 150, 202, fill='gray', dash=(4, 2))
+        canvas.create_line(75, 86, 225, 86, fill='gray', dash=(4, 2))
+        canvas.create_line(75, 86, 150, 202, fill='gray', dash=(4, 2)   )
+        canvas.create_line(75, 144, 225, 144, fill='gray', dash=(4, 2))
+        canvas.create_line(150, 28, 225, 144, fill='gray', dash=(4, 2))
+        canvas.create_line(150, 28, 75, 144, fill='gray', dash=(4, 2))
+        canvas.create_line(225, 86, 150, 202, fill='gray', dash=(4, 2))
+        canvas.create_line(75, 86, 225, 144, fill='gray', dash=(4, 2))
+        canvas.create_line(75, 144, 225, 86, fill='gray', dash=(4, 2))
+        canvas.create_line(150, 28, 150, 202, fill='gray', dash=(4, 2))
         p1.lines = []
         global selected, selected_lines, available_lines
         selected_lines = []
@@ -256,7 +271,7 @@ def main():
 
     def computer_choose_lines():
         line = choose_next_line()
-        selected.append(line);
+        selected.append(line)
         selected_lines.append(line[-1])
         # print(line[-1])
         # print(available_lines)
@@ -300,7 +315,7 @@ def main():
             if set(triangles[i]).issubset(set(selected_lines)):
                 ret = True
         if ret:
-            messagebox.showinfo("Player 1 win")
+            messagebox.showinfo("Player 1 wins")
             for i in range(len(selected)):
                 punish(step[i], selected[i])
             with open('record.stm', 'wb') as record:
