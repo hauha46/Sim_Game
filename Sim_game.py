@@ -9,6 +9,7 @@ triangles = [['a','c','k'], ['a','i','o'], ['a','m','j'], ['a','b','g'], ['k', '
              , ['e','f','h'], ['e','l','n'], ['l','d','m'], ['f','d','l']]
 # Initialize empty var
 available_lines = ['a','b', 'c', 'd','e','f','g','h','i','j','k','l','m','n','o']
+fixed_lines = ['a','b', 'c', 'd','e','f','g','h','i','j','k','l','m','n','o']
 selected = []
 selected_lines = []
 step1 ={}
@@ -43,7 +44,7 @@ def find_max(arr):
     max = 0
     index = 0
     for i in arr:
-        if i.startswith(selected[-1]):
+        if i.startswith(selected[-1])and i[-1] in available_lines:
             if arr.get(i) > max:
                 max = arr.get(i)
                 index = i
@@ -53,18 +54,19 @@ def find_max_init(arr):
     max = 0
     index = 0
     for i in arr:
-        if arr.get(i) > max:
+        if arr.get(i) > max and i[-1] in available_lines:
             max = arr.get(i)
             index = i
     return index
 
 def initialize(step):
     try:
-        for i in range(len(available_lines)):
-            step[selected[-1] + available_lines[i]] = 1 / len(available_lines)
+        for i in range(len(fixed_lines)):
+            if fixed_lines[i] not in selected[-1]:
+                step[selected[-1] + fixed_lines[i]] = 1 / (len(fixed_lines) - len(selected[-1]))
     except(IndexError):
-        for i in range(len(available_lines)):
-            step[available_lines[i]] = 1 / len(available_lines)
+        for i in range(len(fixed_lines)):
+            step[fixed_lines[i]] = 1 / len(fixed_lines)
 
 def reward(step, move):
     pre_move = move[:-1]
@@ -234,16 +236,15 @@ def main():
             with open('record.stm', 'wb') as record:
                 pickle.dump(step,record)
         else:
-            print(step)
             computer_choose_lines()
             print(step)
 
     def computer_choose_lines():
         line = choose_next_line()
-        print(line)
         selected.append(line);
         selected_lines.append(line[-1])
-        print(line[-1])
+        # print(line[-1])
+        # print(available_lines)
         available_lines.remove(line[-1])
 
 
@@ -283,7 +284,6 @@ def main():
         for i in range(len(triangles)):
             if set(triangles[i]).issubset(set(selected_lines)):
                 ret = True
-        global step
         if ret:
             messagebox.showinfo("Player 1 win")
             for i in range(len(selected)):
