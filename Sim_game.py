@@ -6,12 +6,12 @@ import numpy
 
 triangles = [['a','c','k'], ['a','i','o'], ['a','m','j'], ['a','b','g'], ['k', 'e', 'o'], ['k','h','j'], ['k','n','b'], ['o','f','j']
              , ['o','l','b'], ['j','d','b'], ['c','e','i'], ['c','h','m'], ['c', 'g', 'n'], ['i','f','m'], ['i', 'l', 'g'], ['m','d','g']
-             , ['e','f','h'], ['e','l','n'], ['l','d','k'], ['f','d','l']]
+             , ['e','f','h'], ['e','l','n'], ['l','d','f'], ['h','n','d']]
 # Initialize empty var
 available_lines = ['a','b', 'c', 'd','e','f','g','h','i','j','k','l','m','n','o']
 fixed_lines = ['a','b', 'c', 'd','e','f','g','h','i','j','k','l','m','n','o']
-selected = []
-selected_lines = []
+selected = [] 
+selected_lines = [] 
 step1 ={}
 step2 ={}
 step3 ={}
