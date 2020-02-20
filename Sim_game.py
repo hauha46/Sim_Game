@@ -263,8 +263,9 @@ def main():
             messagebox.showinfo("Result",player.mark + " lose")
             for i in range(len(selected)):
                 reward(step[i], selected[i])
-            with open('record.stm', 'wb') as record:
-                pickle.dump(step,record)
+            with open('output.txt', 'w') as record:
+                record.write(" ".join(map(str,step)))
+                record.write("\n")
         else:
             computer_choose_lines()
             print(step)
@@ -315,11 +316,12 @@ def main():
             if set(triangles[i]).issubset(set(selected_lines)):
                 ret = True
         if ret:
-            messagebox.showinfo("Player 1 wins")
+            messagebox.showinfo("Results","Player 1 wins")
             for i in range(len(selected)):
                 punish(step[i], selected[i])
-            with open('record.stm', 'wb') as record:
-                pickle.dump(step, record)
+            with open('output.txt', 'w') as record:
+                record.write(" ".join(map(str,step)))
+                record.write("\n")
 
 
     # Show and action
