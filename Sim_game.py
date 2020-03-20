@@ -30,7 +30,7 @@ class Player:
 class Hidden:
     def __init__(self):
         self.den = []
-        self.th = np.random
+        self.th = np.random.random()
         self.axonValue = 0
         self.axon = 0
         for i in range(15):
@@ -40,16 +40,49 @@ class Hidden:
 class Output:
     def __init__(self):
         self.den = []
-        self.th = np.random
+        self.th = np.random.random()
         self.axonValue = 0
         self.axon = 0
         for i in range(7):
             self.den.append(np.random.random())
 
-def training(input, hidden, output, alpha = 0.9):
+def choose_line(input,canvas):
+    next_line = available_lines.pop(0)
+    if next_line == 'a':
+        input[0] = 1
+    elif next_line == 'b':
+        input[1] = 1
+    elif next_line == 'c':
+        input[2] = 1
+    elif next_line == 'd':
+        input[3] = 1
+    elif next_line == 'e':
+        input[4] = 1
+    elif next_line == 'f':
+        input[5] = 1
+    elif next_line == 'g':
+        input[6] = 1
+    elif next_line == 'h':
+        input[7] = 1
+    elif next_line == 'i':
+        input[8] = 1
+    elif next_line == 'j':
+        input[9] = 1
+    elif next_line == 'k':
+        input[10] = 1
+    elif next_line == 'l':
+        input[11] = 1
+    elif next_line == 'm':
+        input[12] = 1
+    elif next_line == 'n':
+        input[13] = 1
+    elif next_line == 'o':
+        input[14] = 1
+    return input
+def training(input, hidden, output, canvas, alpha = 0.9,):
     #dendrite 2d list
-    ddo = [[0]*hidden]*output
-    ddh = [[0] * output] * hidden
+    ddo = [[0]*len(hidden)]*len(output)
+    ddh = [[0] * len(output)] * len(hidden)
 
     # error init
     errorOutput = [0]*len(output)
@@ -60,22 +93,24 @@ def training(input, hidden, output, alpha = 0.9):
         temp_sum = 0
         for j in range (len(input)):
             temp_sum += hidden[i].den[j] * input[j]
-        hidden[i].axonValue = 1 / (1 + math.exp( -(temp_sum + hidden[i].th)))
+        print(temp_sum)
+        hidden[i].axonValue = 1 / (1 + math.exp( 0-(temp_sum + hidden[i].th)))
+
         if (temp_sum > hidden[i].th):
             hidden[i].axon = 1
         else:
             hidden[i].axon = 0
 
-    for i in range(output.length):
+    for i in range(len(output)):
         temp_sum = 0
-        for j in range(hidden.length):
+        for j in range(len(hidden)):
             temp_sum += output[i].den[j] * hidden[j].axon
-        output[i].axonValue = 1 / (1 + math.exp(-(temp_sum + output[i].th)))
+        output[i].axonValue = 1 / (1 + math.exp(0-(temp_sum + output[i].th)))
         if (temp_sum > output[i].th):
             output[i].axon = 1
         else:
             output[i].axon = 0
-    outputAxon = choose_line()
+    outputAxon = choose_line(input, canvas)
     #Backpropagate
     for i in range(len(output)):
         errorOutput[i] = outputAxon[i] - output[i].axonValue
@@ -94,6 +129,7 @@ def training(input, hidden, output, alpha = 0.9):
             hidden[i].den[j] += alpha * ddh[i][j]
         hidden[i].th += alpha * errorHidden[i]
 
+    return outputAxon
 def main():
     global step
     #Access the file to take input
@@ -107,7 +143,7 @@ def main():
     p1 = Player("Player 1")
 
     #Setup neurons
-    input = [0]*15
+    map_input= [0]*15
     hidden = []
     output = []
     for i in range(7):
@@ -180,80 +216,80 @@ def main():
             canvas.create_line(75, 86, 150, 28, fill=color)
             player.lines.append('a')
             available_lines.remove('a')
-            input[0] = 1
+            map_input[0] = 1
         elif input.get() == 'b':
             canvas.create_line(150, 28, 225, 86, fill=color)
             player.lines.append('b')
             available_lines.remove('b')
-            input[1] = 1
+            map_input[1] = 1
         elif input.get() == 'c':
             canvas.create_line(75, 86, 75, 144, fill=color)
             player.lines.append('c')
             available_lines.remove('c')
-            input[2] = 1
+            map_input[2] = 1
         elif input.get() == 'd':
             canvas.create_line(225, 86, 225, 144, fill=color)
             player.lines.append('d')
             available_lines.remove('d')
-            input[3] = 1
+            map_input[3] = 1
         elif input.get() == 'e':
             canvas.create_line(75, 144, 150, 202, fill=color)
             player.lines.append('e')
             available_lines.remove('e')
-            input[4] = 1
+            map_input[4] = 1
         elif input.get() == 'f':
             canvas.create_line(225, 144, 150, 202, fill=color)
             player.lines.append('f')
             available_lines.remove('f')
-            input[5] = 1
+            map_input[5] = 1
         elif input.get() == 'g':
             canvas.create_line(75, 86, 225, 86, fill=color)
             player.lines.append('g')
             available_lines.remove('g')
-            input[6] = 1
+            map_input[6] = 1
         elif input.get() == 'h':
             canvas.create_line(75, 144, 225, 144, fill=color)
             player.lines.append('h')
             available_lines.remove('h')
-            input[7] = 1
+            map_input[7] = 1
         elif input.get() == 'i':
             canvas.create_line(75, 86, 150, 202, fill=color)
             player.lines.append('i')
             available_lines.remove('i')
-            input[8] = 1
+            map_input[8] = 1
         elif input.get() == 'j':
             canvas.create_line(150, 28, 225, 144, fill=color)
             player.lines.append('j')
             available_lines.remove('j')
-            input[9] = 1
+            map_input[9] = 1
         elif input.get() == 'k':
             canvas.create_line(150, 28, 75, 144, fill=color)
             player.lines.append('k')
             available_lines.remove('k')
-            input[10] = 1
+            map_input[10] = 1
         elif input.get() == 'l':
             canvas.create_line(225, 86, 150, 202, fill=color)
             player.lines.append('l')
             available_lines.remove('l')
-            input[11] = 1
+            map_input[11] = 1
         elif input.get() == 'm':
             canvas.create_line(75, 86, 225, 144, fill=color)
             player.lines.append('m')
             available_lines.remove('m')
-            input[12] = 1
+            map_input[12] = 1
         elif input.get() == 'n':
             canvas.create_line(75, 144, 225, 86, fill=color)
             player.lines.append('n')
             available_lines.remove('n')
-            input[13] = 1
+            map_input[13] = 1
         elif input.get() == 'o':
             canvas.create_line(150, 28, 150, 202, fill=color)
             player.lines.append('o')
             available_lines.remove('o')
-            input[14] = 1
+            map_input[14] = 1
 
         # Computer choose line
-        training(input, hidden, output)
+        training(map_input, hidden, output,canvas)
 
     # Show and action
     choose_button = Button(window, text = "Choose line", command = player_choose_lines)
