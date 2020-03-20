@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 from PIL import ImageTk, Image
 import pickle
+import numpy as np
+import math
 import numpy
 
 triangles = [['a','c','k'], ['a','i','o'], ['a','m','j'], ['a','b','g'], ['k', 'e', 'o'], ['k','h','j'], ['k','n','b'], ['o','f','j']
@@ -10,23 +12,7 @@ triangles = [['a','c','k'], ['a','i','o'], ['a','m','j'], ['a','b','g'], ['k', '
 # Initialize empty var
 available_lines = ['a','b', 'c', 'd','e','f','g','h','i','j','k','l','m','n','o']
 fixed_lines = ['a','b', 'c', 'd','e','f','g','h','i','j','k','l','m','n','o']
-selected = [] 
-selected_lines = [] 
-step1 ={}
-step2 ={}
-step3 ={}
-step4 ={}
-step5 ={}
-step6 ={}
-step7 ={}
-step = []
-step.append(step1)
-step.append(step2)
-step.append(step3)
-step.append(step4)
-step.append(step5)
-step.append(step6)
-step.append(step7)
+
 
 class Player:
 
@@ -40,89 +26,73 @@ class Player:
             if set(triangles[i]).issubset(set(self.lines)):
                 ret = True
         return ret
-def find_max(arr):
-    max = 0
-    index = 0
-    for i in arr:
-        if i.startswith(selected[-1])and i[-1] in available_lines:
-            if arr.get(i) > max:
-                max = arr.get(i)
-                index = i
-    return index
 
-def find_max_init(arr):
-    max = 0
-    index = 0
-    for i in arr:
-        if arr.get(i) > max and i[-1] in available_lines:
-            max = arr.get(i)
-            index = i
-    return index
+class Hidden:
+    def __init__(self):
+        self.den = []
+        self.th = np.random
+        self.axonValue = 0
+        self.axon = 0
+        for i in range(15):
 
-def initialize(step):
-    try:
-        for i in range(len(fixed_lines)):
-            if fixed_lines[i] not in selected[-1]:
-                step[selected[-1] + fixed_lines[i]] = 1 / (len(fixed_lines) - len(selected[-1]))
-    except(IndexError):
-        for i in range(len(fixed_lines)):
-            step[fixed_lines[i]] = 1 / len(fixed_lines)
+            self.den.append(np.random.random())
 
-def reward(step, move):
-    pre_move = move[:-1]
-    possible_move =[]
-    for i in step:
-        if i.startswith(pre_move):
-            possible_move.append(i)
-    step[move] = step.get(move) * 2
-    possible_move.remove(move)
-    for i in range (len(possible_move)):
-        step[possible_move[i]] = step.get(possible_move[i]) - (step.get(move)/2)/(len(possible_move))
+class Output:
+    def __init__(self):
+        self.den = []
+        self.th = np.random
+        self.axonValue = 0
+        self.axon = 0
+        for i in range(7):
+            self.den.append(np.random.random())
 
-def punish(step, move):
-    pre_move = move[:-1]
-    possible_move = []
-    for i in step:
-        if i.startswith(pre_move):
-            possible_move.append(i)
-    step[move] = step.get(move) / 2
-    possible_move.remove(move)
+def training(input, hidden, output, alpha = 0.9):
+    #dendrite 2d list
+    ddo = [[0]*hidden]*output
+    ddh = [[0] * output] * hidden
 
-    for i in range(len(possible_move)):
-        step[possible_move[i]] = step.get(possible_move[i]) + (step.get(move)) / len(possible_move)
+    # error init
+    errorOutput = [0]*len(output)
+    axonErrorOutput = [0] * len(output)
+    errorHidden = [0]*len(hidden)
+    #Propagate
+    for i in range (len(hidden)):
+        temp_sum = 0
+        for j in range (len(input)):
+            temp_sum += hidden[i].den[j] * input[j]
+        hidden[i].axonValue = 1 / (1 + math.exp( -(temp_sum + hidden[i].th)))
+        if (temp_sum > hidden[i].th):
+            hidden[i].axon = 1
+        else:
+            hidden[i].axon = 0
 
-def find_in_step(step):
-    found = False
+    for i in range(output.length):
+        temp_sum = 0
+        for j in range(hidden.length):
+            temp_sum += output[i].den[j] * hidden[j].axon
+        output[i].axonValue = 1 / (1 + math.exp(-(temp_sum + output[i].th)))
+        if (temp_sum > output[i].th):
+            output[i].axon = 1
+        else:
+            output[i].axon = 0
+    outputAxon = choose_line()
+    #Backpropagate
+    for i in range(len(output)):
+        errorOutput[i] = outputAxon[i] - output[i].axonValue
+        axonErrorOutput[i] = (1- output[i].axonValue) * output[i].axonValue * errorOutput[i]
+        for j in range (len(hidden)):
+            ddo[i][j] = axonErrorOutput[i]*output[i].den[j]
+            errorHidden[j] = ddo[i][j]*hidden[j].axonValue*(1-hidden[j].axonValue) + errorHidden[j]
+            output[i].den[j] = output[i].den[j] + alpha * ddo[i][j]
 
-    if step == {}:
-        initialize(step)
-        return find_max_init(step)
-    for i in step:
-        if i.startswith(selected[-1]):
-            found = True
-    if (found):
-        return find_max(step)
-    else:
-        initialize(step)
-        return find_max(step)
+        output[i].th += alpha * axonErrorOutput[i]
 
-def choose_next_line():
-    if selected == []:
-        if step[0] == {}: initialize(step[0])
-        return find_max_init(step[0])
-    else:
-        if len(selected) == 1:
-            return find_in_step(step[1])
-        elif len(selected) == 2:
-            return find_in_step(step[2])
-        elif len(selected) == 3:
-            return find_in_step(step[3])
-        elif len(selected) == 4:
-            return find_in_step(step[4])
-        elif len(selected) == 5:
-            return find_in_step(step[5])
-        elif len(selected) == 6:
-            return find_in_step(step[6])
+
+    for i in range(len(hidden)):
+        for j in range(len(output)):
+            ddh[i][j] = errorHidden[i]*hidden[i].den[j]
+            hidden[i].den[j] += alpha * ddh[i][j]
+        hidden[i].th += alpha * errorHidden[i]
 
 def main():
     global step
@@ -132,9 +102,18 @@ def main():
             step = pickle.load(record)
     except(FileNotFoundError):
         print()
-    #print(step)
+
     #Player Setup
     p1 = Player("Player 1")
+
+    #Setup neurons
+    input = [0]*15
+    hidden = []
+    output = []
+    for i in range(7):
+        hidden.append(Hidden())
+    for i in range(15):
+        output.append(Output())
 
     # Layout with Tkinter
     window = Tk()
@@ -165,7 +144,7 @@ def main():
 
     # Functionality
 
-    def reset2():
+    def reset():
         canvas.delete("all")
         label = Label(window, text="Player 1")
         label.place(x=20, y=250)
@@ -201,134 +180,86 @@ def main():
             canvas.create_line(75, 86, 150, 28, fill=color)
             player.lines.append('a')
             available_lines.remove('a')
+            input[0] = 1
         elif input.get() == 'b':
             canvas.create_line(150, 28, 225, 86, fill=color)
             player.lines.append('b')
             available_lines.remove('b')
+            input[1] = 1
         elif input.get() == 'c':
             canvas.create_line(75, 86, 75, 144, fill=color)
             player.lines.append('c')
             available_lines.remove('c')
+            input[2] = 1
         elif input.get() == 'd':
             canvas.create_line(225, 86, 225, 144, fill=color)
             player.lines.append('d')
             available_lines.remove('d')
+            input[3] = 1
         elif input.get() == 'e':
             canvas.create_line(75, 144, 150, 202, fill=color)
             player.lines.append('e')
             available_lines.remove('e')
+            input[4] = 1
         elif input.get() == 'f':
             canvas.create_line(225, 144, 150, 202, fill=color)
             player.lines.append('f')
             available_lines.remove('f')
+            input[5] = 1
         elif input.get() == 'g':
             canvas.create_line(75, 86, 225, 86, fill=color)
             player.lines.append('g')
             available_lines.remove('g')
+            input[6] = 1
         elif input.get() == 'h':
             canvas.create_line(75, 144, 225, 144, fill=color)
             player.lines.append('h')
             available_lines.remove('h')
+            input[7] = 1
         elif input.get() == 'i':
             canvas.create_line(75, 86, 150, 202, fill=color)
             player.lines.append('i')
             available_lines.remove('i')
+            input[8] = 1
         elif input.get() == 'j':
             canvas.create_line(150, 28, 225, 144, fill=color)
             player.lines.append('j')
             available_lines.remove('j')
+            input[9] = 1
         elif input.get() == 'k':
             canvas.create_line(150, 28, 75, 144, fill=color)
             player.lines.append('k')
             available_lines.remove('k')
+            input[10] = 1
         elif input.get() == 'l':
             canvas.create_line(225, 86, 150, 202, fill=color)
             player.lines.append('l')
             available_lines.remove('l')
+            input[11] = 1
         elif input.get() == 'm':
             canvas.create_line(75, 86, 225, 144, fill=color)
             player.lines.append('m')
             available_lines.remove('m')
+            input[12] = 1
         elif input.get() == 'n':
             canvas.create_line(75, 144, 225, 86, fill=color)
             player.lines.append('n')
             available_lines.remove('n')
+            input[13] = 1
         elif input.get() == 'o':
             canvas.create_line(150, 28, 150, 202, fill=color)
             player.lines.append('o')
             available_lines.remove('o')
+            input[14] = 1
 
-        global step
-        if player.checkTriangles():
-            messagebox.showinfo("Result",player.mark + " lose")
-            for i in range(len(selected)):
-                reward(step[i], selected[i])
-            with open('output.txt', 'w') as record:
-                record.write(" ".join(map(str,step)))
-                record.write("\n")
-        else:
-            computer_choose_lines()
-            print(step)
-
-    def computer_choose_lines():
-        line = choose_next_line()
-        selected.append(line)
-        selected_lines.append(line[-1])
-        # print(line[-1])
-        # print(available_lines)
-        available_lines.remove(line[-1])
-
-
-        if line[-1] == 'a':
-            canvas.create_line(75, 86, 150, 28, fill='red')
-        elif line[-1] == 'b':
-            canvas.create_line(150, 28, 225, 86, fill='red')
-        elif line[-1] == 'c':
-            canvas.create_line(75, 86, 75, 144, fill='red')
-        elif line[-1] == 'd':
-            canvas.create_line(225, 86, 225, 144, fill='red')
-        elif line[-1] == 'e':
-            canvas.create_line(75, 144, 150, 202, fill='red')
-        elif line[-1] == 'f':
-            canvas.create_line(225, 144, 150, 202, fill='red')
-        elif line[-1] == 'g':
-            canvas.create_line(75, 86, 225, 86, fill='red')
-        elif line[-1] == 'h':
-            canvas.create_line(75, 144, 225, 144, fill='red')
-        elif line[-1] == 'i':
-            canvas.create_line(75, 86, 150, 202, fill='red')
-        elif line[-1] == 'j':
-            canvas.create_line(150, 28, 225, 144, fill='red')
-        elif line[-1] == 'k':
-            canvas.create_line(150, 28, 75, 144, fill='red')
-        elif line[-1] == 'l':
-            canvas.create_line(225, 86, 150, 202, fill='red')
-        elif line[-1] == 'm':
-            canvas.create_line(75, 86, 225, 144, fill='red')
-        elif line[-1] == 'n':
-            canvas.create_line(75, 144, 225, 86, fill='red')
-        elif line[-1] == 'o':
-            canvas.create_line(150, 28, 150, 202, fill='red')
-
-
-        ret = False
-        for i in range(len(triangles)):
-            if set(triangles[i]).issubset(set(selected_lines)):
-                ret = True
-        if ret:
-            messagebox.showinfo("Results","Player 1 wins")
-            for i in range(len(selected)):
-                punish(step[i], selected[i])
-            with open('output.txt', 'w') as record:
-                record.write(" ".join(map(str,step)))
-                record.write("\n")
-
+        # Computer choose line
+        training(input, hidden, output)
 
     # Show and action
     choose_button = Button(window, text = "Choose line", command = player_choose_lines)
     choose_button.place(x = 130, y = 250)
 
-    reset_button = Button(window, text="Reset Game", command=reset2)
+    reset_button = Button(window, text="Reset Game", command=reset)
     reset_button.place(x=220, y=250)
 
     path = "Helper.png"
