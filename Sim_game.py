@@ -49,34 +49,49 @@ class Output:
 def choose_line(input,canvas):
     next_line = available_lines.pop(0)
     if next_line == 'a':
+        canvas.create_line(75, 86, 150, 28, fill='red')
         input[0] = 1
     elif next_line == 'b':
+        canvas.create_line(150, 28, 225, 86, fill='red')
         input[1] = 1
     elif next_line == 'c':
+        canvas.create_line(75, 86, 75, 144, fill='red')
         input[2] = 1
     elif next_line == 'd':
+        canvas.create_line(225, 86, 225, 144, fill='red')
         input[3] = 1
     elif next_line == 'e':
+        canvas.create_line(75, 144, 150, 202, fill='red')
         input[4] = 1
     elif next_line == 'f':
+        canvas.create_line(225, 144, 150, 202, fill='red')
         input[5] = 1
     elif next_line == 'g':
+        canvas.create_line(75, 86, 225, 86, fill='red')
         input[6] = 1
     elif next_line == 'h':
+        canvas.create_line(75, 144, 225, 144, fill='red')
         input[7] = 1
     elif next_line == 'i':
+        canvas.create_line(75, 86, 150, 202, fill='red')
         input[8] = 1
     elif next_line == 'j':
+        canvas.create_line(150, 28, 225, 144, fill='red')
         input[9] = 1
     elif next_line == 'k':
+        canvas.create_line(150, 28, 75, 144, fill='red')
         input[10] = 1
     elif next_line == 'l':
+        canvas.create_line(225, 86, 150, 202, fill='red')
         input[11] = 1
     elif next_line == 'm':
+        canvas.create_line(75, 86, 225, 144, fill='red')
         input[12] = 1
     elif next_line == 'n':
+        canvas.create_line(75, 144, 225, 86, fill='red')
         input[13] = 1
     elif next_line == 'o':
+        canvas.create_line(150, 28, 150, 202, fill='red')
         input[14] = 1
     return input
 def training(input, hidden, output, canvas, alpha = 0.9,):
@@ -200,11 +215,10 @@ def main():
         canvas.create_line(75, 144, 225, 86, fill='gray', dash=(4, 2))
         canvas.create_line(150, 28, 150, 202, fill='gray', dash=(4, 2))
         p1.lines = []
-        global selected, selected_lines, available_lines
+         global selected, selected_lines, available_lines
         selected_lines = []
         available_lines = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
         selected = []
-
     def player_choose_lines():
 
         color = 'blue'
@@ -218,7 +232,7 @@ def main():
             available_lines.remove('a')
             map_input[0] = 1
         elif input.get() == 'b':
-            canvas.create_line(150, 28, 225, 86, fill=color)
+            canvas.create_line(150, 28, 225, 86, fill=color)    
             player.lines.append('b')
             available_lines.remove('b')
             map_input[1] = 1
@@ -288,7 +302,12 @@ def main():
             available_lines.remove('o')
             map_input[14] = 1
 
+        if player.checkTriangles():
+            messagebox.showinfo("Result",player.mark + " lose")
+        else:
+            computer_choose_lines()
         # Computer choose line
+    def computer_choose_lines():
         training(map_input, hidden, output,canvas)
 
     # Show and action
