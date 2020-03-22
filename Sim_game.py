@@ -57,7 +57,6 @@ def search_line():
     for i in range(len(available_lines)):
         picked_line.append(available_lines[i])
         for j in range(len(triangles)):
-            print(picked_line)
             if not set(triangles[j]).issubset(set(picked_line)):
                 return available_lines[i]
         picked_line.remove(available_lines[i])
@@ -145,22 +144,22 @@ def training(input, hidden, output, canvas, alpha=0.9, ):
         else:
             output[i].axon = 0
     outputAxon = display_line(input, canvas)
-    # Backpropagate
-    for i in range(len(output)):
-        errorOutput[i] = outputAxon[i] - output[i].axonValue
-        axonErrorOutput[i] = (1 - output[i].axonValue) * output[i].axonValue * errorOutput[i]
-        for j in range(len(hidden)):
-            ddo[i][j] = axonErrorOutput[i] * output[i].den[j]
-            errorHidden[j] = ddo[i][j] * hidden[j].axonValue * (1 - hidden[j].axonValue) + errorHidden[j]
-            output[i].den[j] = output[i].den[j] + alpha * ddo[i][j]
-
-        output[i].th += alpha * axonErrorOutput[i]
-
-    for i in range(len(hidden)):
-        for j in range(len(output)):
-            ddh[i][j] = errorHidden[i] * hidden[i].den[j]
-            hidden[i].den[j] += alpha * ddh[i][j]
-        hidden[i].th += alpha * errorHidden[i]
+    # # Backpropagate
+    # for i in range(len(output)):
+    #     errorOutput[i] = outputAxon[i] - output[i].axonValue
+    #     axonErrorOutput[i] = (1 - output[i].axonValue) * output[i].axonValue * errorOutput[i]
+    #     for j in range(len(hidden)):
+    #         ddo[i][j] = axonErrorOutput[i] * output[i].den[j]
+    #         errorHidden[j] = ddo[i][j] * hidden[j].axonValue * (1 - hidden[j].axonValue) + errorHidden[j]
+    #         output[i].den[j] = output[i].den[j] + alpha * ddo[i][j]
+    #
+    #     output[i].th += alpha * axonErrorOutput[i]
+    #
+    # for i in range(len(hidden)):
+    #     for j in range(len(output)):
+    #         ddh[i][j] = errorHidden[i] * hidden[i].den[j]
+    #         hidden[i].den[j] += alpha * ddh[i][j]
+    #     hidden[i].th += alpha * errorHidden[i]
 
     return outputAxon
 
@@ -251,49 +250,34 @@ def main():
             available_lines.remove(move)
             if move == 'a':
                 canvas.create_line(75, 86, 150, 28, fill=color)
-                map_input[0] = 1
             elif move == 'b':
                 canvas.create_line(150, 28, 225, 86, fill=color)
-                map_input[1] = 1
             elif move == 'c':
                 canvas.create_line(75, 86, 75, 144, fill=color)
-                map_input[2] = 1
             elif move == 'd':
                 canvas.create_line(225, 86, 225, 144, fill=color)
-                map_input[3] = 1
             elif move == 'e':
                 canvas.create_line(75, 144, 150, 202, fill=color)
-                map_input[4] = 1
             elif move == 'f':
                 canvas.create_line(225, 144, 150, 202, fill=color)
-                map_input[5] = 1
             elif move == 'g':
                 canvas.create_line(75, 86, 225, 86, fill=color)
-                map_input[6] = 1
             elif move == 'h':
                 canvas.create_line(75, 144, 225, 144, fill=color)
-                map_input[7] = 1
             elif move == 'i':
                 canvas.create_line(75, 86, 150, 202, fill=color)
-                map_input[8] = 1
             elif move == 'j':
                 canvas.create_line(150, 28, 225, 144, fill=color)
-                map_input[9] = 1
             elif move == 'k':
                 canvas.create_line(150, 28, 75, 144, fill=color)
-                map_input[10] = 1
             elif move == 'l':
                 canvas.create_line(225, 86, 150, 202, fill=color)
-                map_input[11] = 1
             elif move == 'm':
                 canvas.create_line(75, 86, 225, 144, fill=color)
-                map_input[12] = 1
             elif move == 'n':
                 canvas.create_line(75, 144, 225, 86, fill=color)
-                map_input[13] = 1
             elif move == 'o':
                 canvas.create_line(150, 28, 150, 202, fill=color)
-                map_input[14] = 1
             if player.checkTriangles():
                 messagebox.showinfo("Result", player.mark + " lose")
             else:
@@ -305,10 +289,10 @@ def main():
         for i in range(len(triangles)):
             if set(triangles[i]).issubset(set(picked_line)):
                 messagebox.showinfo("Computer lose")
-        with open('hiddenNeurons', 'wb') as hiddenLoad:
-            pickle.dump(hidden, hiddenLoad)
-        with open('outputNeurons', 'wb') as outputLoad:
-            pickle.dump(output, outputLoad)
+        # with open('hiddenNeurons', 'wb') as hiddenLoad:
+        #     pickle.dump(hidden, hiddenLoad)
+        # with open('outputNeurons', 'wb') as outputLoad:
+        #     pickle.dump(output, outputLoad)
 
     # Show and action
     choose_button = Button(window, text="Choose line", command=player_choose_lines)

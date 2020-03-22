@@ -152,10 +152,16 @@ def main():
     global hidden, output, map_input
 
     #Setup neural
-    for i in range(7):
-        hidden.append(Hidden())
-    for i in range(15):
-        output.append(Output())
+    try:
+        with open('hiddenNeurons', 'rb') as hiddenLoad:
+            hidden = pickle.load(hiddenLoad)
+        with open('outputNeurons', 'rb') as outputLoad:
+            output = pickle.load(outputLoad)
+    except(FileNotFoundError):
+        for i in range(7):
+            hidden.append(Hidden())
+        for i in range(15):
+            output.append(Output())
 
     count = 0
     # Functionality
