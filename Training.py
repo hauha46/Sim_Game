@@ -50,7 +50,7 @@ def search_line():
     # Choose line based on triangles
     for i in range(len(available_lines)):
         picked_line_com.append(available_lines[i])
-        print("Computer picked: " + str(available_lines[i]))
+        #print("Computer picked: " + str(available_lines[i]))
         resultString += "Computer picked: " + str(available_lines[i]) + "\n" 
         for j in range(len(triangles)):
             if not set(triangles[j]).issubset(set(picked_line_com)):
@@ -113,7 +113,7 @@ def training(input, hidden, output, alpha=0.9, ):
             hidden[i].axon = 1
         else:
             hidden[i].axon = 0
-    print("Output")
+    #print("Output")
     resultString += "Output \n"
     for i in range(len(output)):
         temp_sum = 0
@@ -124,7 +124,7 @@ def training(input, hidden, output, alpha=0.9, ):
             output[i].axon = 1
         else:
             output[i].axon = 0
-        print(fixed_lines[i] + ": " + str(output[i].axonValue))
+        #print(fixed_lines[i] + ": " + str(output[i].axonValue))
         resultString += fixed_lines[i] + ": " + str(output[i].axonValue) + "\n"
     outputAxon = display_line(input)
     # Backpropagate
@@ -148,7 +148,7 @@ def training(input, hidden, output, alpha=0.9, ):
 
 def reset():
     global available_lines, picked_line_man, picked_line_com, hidden, output, resultString
-    print("Total moves picked by computer: " + str(picked_line_com))
+    #print("Total moves picked by computer: " + str(picked_line_com))
     resultString += "Total moves picked by computer: " + str(picked_line_com) + "\n"
     picked_line_man = []
     picked_line_com = []
@@ -172,7 +172,7 @@ def main():
     count = 0
     # Functionality
     # Number of steps executing. A game can include from 3 to 7 steps
-    for i in range(10000):
+    for i in range(100):
         next_line = random.choice(available_lines)
         picked_line_man.append(next_line)
         available_lines.remove(next_line)
@@ -208,14 +208,14 @@ def main():
             map_input[14] = 1
         if checkTriangles(picked_line_man):
             reset()
-            print("Game number: " + str(count) + "\n")
+            #print("Game number: " + str(count) + "\n")
             resultString += "Game number: " + str(count) + "\n"
             count += 1
         else:
             training(map_input, hidden, output)
             if checkTriangles(picked_line_com):
                 reset()
-                print("Game number: " + str(count) + "\n")
+                #print("Game number: " + str(count) + "\n")
                 resultString += "Game number: " + str(count) + "\n"
                 count += 1
 
