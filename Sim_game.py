@@ -144,22 +144,22 @@ def training(input, hidden, output, canvas, alpha=0.9, ):
         else:
             output[i].axon = 0
     outputAxon = display_line(input, canvas)
-    # # Backpropagate
-    # for i in range(len(output)):
-    #     errorOutput[i] = outputAxon[i] - output[i].axonValue
-    #     axonErrorOutput[i] = (1 - output[i].axonValue) * output[i].axonValue * errorOutput[i]
-    #     for j in range(len(hidden)):
-    #         ddo[i][j] = axonErrorOutput[i] * output[i].den[j]
-    #         errorHidden[j] = ddo[i][j] * hidden[j].axonValue * (1 - hidden[j].axonValue) + errorHidden[j]
-    #         output[i].den[j] = output[i].den[j] + alpha * ddo[i][j]
-    #
-    #     output[i].th += alpha * axonErrorOutput[i]
-    #
-    # for i in range(len(hidden)):
-    #     for j in range(len(output)):
-    #         ddh[i][j] = errorHidden[i] * hidden[i].den[j]
-    #         hidden[i].den[j] += alpha * ddh[i][j]
-    #     hidden[i].th += alpha * errorHidden[i]
+    # Backpropagate
+    for i in range(len(output)):
+        errorOutput[i] = outputAxon[i] - output[i].axonValue
+        axonErrorOutput[i] = (1 - output[i].axonValue) * output[i].axonValue * errorOutput[i]
+        for j in range(len(hidden)):
+            ddo[i][j] = axonErrorOutput[i] * output[i].den[j]
+            errorHidden[j] = ddo[i][j] * hidden[j].axonValue * (1 - hidden[j].axonValue) + errorHidden[j]
+            output[i].den[j] = output[i].den[j] + alpha * ddo[i][j]
+
+        output[i].th += alpha * axonErrorOutput[i]
+
+    for i in range(len(hidden)):
+        for j in range(len(output)):
+            ddh[i][j] = errorHidden[i] * hidden[i].den[j]
+            hidden[i].den[j] += alpha * ddh[i][j]
+        hidden[i].th += alpha * errorHidden[i]
 
     return outputAxon
 
@@ -249,34 +249,49 @@ def main():
             player.lines.append(move)
             available_lines.remove(move)
             if move == 'a':
+                map_input[0] = 1
                 canvas.create_line(75, 86, 150, 28, fill=color)
             elif move == 'b':
+                map_input[1] = 1
                 canvas.create_line(150, 28, 225, 86, fill=color)
             elif move == 'c':
+                map_input[2] = 1
                 canvas.create_line(75, 86, 75, 144, fill=color)
             elif move == 'd':
+                map_input[3] = 1
                 canvas.create_line(225, 86, 225, 144, fill=color)
             elif move == 'e':
+                map_input[4] = 1
                 canvas.create_line(75, 144, 150, 202, fill=color)
             elif move == 'f':
+                map_input[5] = 1
                 canvas.create_line(225, 144, 150, 202, fill=color)
             elif move == 'g':
+                map_input[6] = 1
                 canvas.create_line(75, 86, 225, 86, fill=color)
             elif move == 'h':
+                map_input[7] = 1
                 canvas.create_line(75, 144, 225, 144, fill=color)
             elif move == 'i':
+                map_input[8] = 1
                 canvas.create_line(75, 86, 150, 202, fill=color)
             elif move == 'j':
+                map_input[9] = 1
                 canvas.create_line(150, 28, 225, 144, fill=color)
             elif move == 'k':
+                map_input[10] = 1
                 canvas.create_line(150, 28, 75, 144, fill=color)
             elif move == 'l':
+                map_input[11] = 1
                 canvas.create_line(225, 86, 150, 202, fill=color)
             elif move == 'm':
+                map_input[12] = 1
                 canvas.create_line(75, 86, 225, 144, fill=color)
             elif move == 'n':
+                map_input[13] = 1
                 canvas.create_line(75, 144, 225, 86, fill=color)
             elif move == 'o':
+                map_input[14] = 1
                 canvas.create_line(150, 28, 150, 202, fill=color)
             if player.checkTriangles():
                 messagebox.showinfo("Result", player.mark + " lose")

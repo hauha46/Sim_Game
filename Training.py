@@ -113,7 +113,8 @@ def training(input, hidden, output, alpha=0.9, ):
             hidden[i].axon = 1
         else:
             hidden[i].axon = 0
-
+    print("Output")
+    resultString += "Output \n"
     for i in range(len(output)):
         temp_sum = 0
         for j in range(len(hidden)):
@@ -123,9 +124,6 @@ def training(input, hidden, output, alpha=0.9, ):
             output[i].axon = 1
         else:
             output[i].axon = 0
-    print("Output")
-    resultString += "Output \n"
-    for i in range(len(output)):
         print(fixed_lines[i] + ": " + str(output[i].axonValue))
         resultString += fixed_lines[i] + ": " + str(output[i].axonValue) + "\n"
     outputAxon = display_line(input)
@@ -173,7 +171,8 @@ def main():
 
     count = 0
     # Functionality
-    for i in range(100):
+    # Number of steps executing. A game can include from 3 to 7 steps
+    for i in range(10000):
         next_line = random.choice(available_lines)
         picked_line_man.append(next_line)
         available_lines.remove(next_line)
