@@ -11,12 +11,13 @@ triangles = [['a', 'c', 'k'], ['a', 'i', 'o'], ['a', 'm', 'j'], ['a', 'b', 'g'],
     , ['e', 'f', 'h'], ['e', 'l', 'n'], ['l', 'd', 'f'], ['h', 'n', 'd']]
 # Initialize empty var
 available_lines = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
+fixed_lines = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
 map_input = [0] * 15
 hidden = []
 output = []
 picked_line_com = []
 picked_line_man = []
-
+resultString =''
 def checkTriangles(picked):
     ret = False
     for i in range(len(triangles)):
@@ -45,10 +46,12 @@ class Output:
             self.den.append(np.random.random())
 
 def search_line():
-    global picked_line_com
+    global picked_line_com, resultString
     # Choose line based on triangles
     for i in range(len(available_lines)):
         picked_line_com.append(available_lines[i])
+        print("Computer picked: " + str(available_lines[i]))
+        resultString += "Computer picked: " + str(available_lines[i]) + "\n" 
         for j in range(len(triangles)):
             if not set(triangles[j]).issubset(set(picked_line_com)):
                 return available_lines[i]
@@ -92,10 +95,10 @@ def display_line(input):
 
 
 def training(input, hidden, output, alpha=0.9, ):
+    global fixed_lines, resultString
     # dendrite 2d list
     ddo = [[0] * len(hidden)] * len(output)
     ddh = [[0] * len(output)] * len(hidden)
-
     # error init
     errorOutput = [0] * len(output)
     axonErrorOutput = [0] * len(output)
@@ -106,7 +109,6 @@ def training(input, hidden, output, alpha=0.9, ):
         for j in range(len(input)):
             temp_sum += hidden[i].den[j] * input[j]
         hidden[i].axonValue = 1 / (1 + math.exp(0 - (temp_sum + hidden[i].th)))
-
         if (temp_sum > hidden[i].th):
             hidden[i].axon = 1
         else:
@@ -121,6 +123,11 @@ def training(input, hidden, output, alpha=0.9, ):
             output[i].axon = 1
         else:
             output[i].axon = 0
+    print("Output")
+    resultString += "Output \n"
+    for i in range(len(output)):
+        print(fixed_lines[i] + ": " + str(output[i].axonValue))
+        resultString += fixed_lines[i] + ": " + str(output[i].axonValue) + "\n"
     outputAxon = display_line(input)
     # Backpropagate
     for i in range(len(output)):
@@ -142,14 +149,15 @@ def training(input, hidden, output, alpha=0.9, ):
     return outputAxon
 
 def reset():
-    global available_lines, picked_line_man, picked_line_com, hidden, output
-    print(picked_line_com)
+    global available_lines, picked_line_man, picked_line_com, hidden, output, resultString
+    print("Total moves picked by computer: " + str(picked_line_com))
+    resultString += "Total moves picked by computer: " + str(picked_line_com) + "\n"
     picked_line_man = []
     picked_line_com = []
     available_lines = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
 
 def main():
-    global hidden, output, map_input
+    global hidden, output, map_input, resultString
 
     #Setup neural
     try:
@@ -165,7 +173,7 @@ def main():
 
     count = 0
     # Functionality
-    for i in range(100000):
+    for i in range(100):
         next_line = random.choice(available_lines)
         picked_line_man.append(next_line)
         available_lines.remove(next_line)
@@ -201,19 +209,23 @@ def main():
             map_input[14] = 1
         if checkTriangles(picked_line_man):
             reset()
-            print(count)
+            print("Game number: " + str(count) + "\n")
+            resultString += "Game number: " + str(count) + "\n"
             count += 1
         else:
             training(map_input, hidden, output)
             if checkTriangles(picked_line_com):
                 reset()
-                print(count)
+                print("Game number: " + str(count) + "\n")
+                resultString += "Game number: " + str(count) + "\n"
                 count += 1
 
     with open('hiddenNeurons', 'wb') as hiddenLoad:
         pickle.dump(hidden, hiddenLoad)
     with open('outputNeurons', 'wb') as outputLoad:
         pickle.dump(output, outputLoad)
-
+    text_file = open("output.txt", "wt")
+    n = text_file.write(resultString)
+    text_file.close()
 if __name__ == '__main__':
     main()
