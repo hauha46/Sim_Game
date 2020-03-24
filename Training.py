@@ -124,9 +124,10 @@ def training(input, hidden, output, alpha=0.9, ):
             output[i].axon = 1
         else:
             output[i].axon = 0
-        #print(fixed_lines[i] + ": " + str(output[i].axonValue))
+        #print(fixed_lines[i] + ": " + str(output[i].axonValue))    
         resultString += fixed_lines[i] + ": " + str(output[i].axonValue) + "\n"
     outputAxon = display_line(input)
+
     # Backpropagate
     for i in range(len(output)):
         errorOutput[i] = outputAxon[i] - output[i].axonValue
@@ -172,7 +173,7 @@ def main():
     count = 0
     # Functionality
     # Number of steps executing. A game can include from 3 to 7 steps
-    for i in range(100):
+    for i in range(10000):
         next_line = random.choice(available_lines)
         picked_line_man.append(next_line)
         available_lines.remove(next_line)
@@ -223,7 +224,7 @@ def main():
         pickle.dump(hidden, hiddenLoad)
     with open('outputNeurons', 'wb') as outputLoad:
         pickle.dump(output, outputLoad)
-    text_file = open("output.txt", "wt")
+    text_file = open("descriptive_output.txt", "wt")
     n = text_file.write(resultString)
     text_file.close()
 if __name__ == '__main__':
