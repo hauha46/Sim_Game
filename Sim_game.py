@@ -11,9 +11,13 @@ triangles = [['a', 'c', 'k'], ['a', 'i', 'o'], ['a', 'm', 'j'], ['a', 'b', 'g'],
     , ['e', 'f', 'h'], ['e', 'l', 'n'], ['l', 'd', 'f'], ['h', 'n', 'd']]
 # Initialize empty var
 all_lines = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
-fixed_lines = [0]*15
-player_lines = []
-machine_lines = []
+# fixed_lines = [1,1,1,1,0,0,0,0,1,0,1,1,0,0,1]
+# player_lines = ['a','b','l','k']
+# machine_lines = ['o', 'i', 'c', 'd']
+fixed_lines = [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]
+player_lines = ['a']
+machine_lines = ['b']
+
 
 def checkTriangles(lines):
     for i in range(len(triangles)):
@@ -67,17 +71,19 @@ def choose_line():
         if fixed_lines[i] == 0:
             fixed_lines[i] = 1
             machine_lines.append(all_lines[i])
-            line_score = minimax(0, True, -99999, 99999)
+            line_score = minimax(0, False, -99999, 99999)
             print(line_score)
             machine_lines.remove(all_lines[i])
             fixed_lines[i] = 0
             if (line_score > best_score ):
                 best_score = line_score
                 line = all_lines[i]
+    print(line)
     return line
 
 def display_line(canvas):
     next_line = choose_line()
+    machine_lines.append(next_line)
     if next_line == 'a':
         fixed_lines[0] = 1
         canvas.create_line(75, 86, 150, 28, fill='red')
@@ -154,7 +160,8 @@ def main():
     canvas.create_line(150, 28, 150, 202, fill='gray', dash=(4, 2))
 
     # Functionality
-
+    canvas.create_line(75, 86, 150, 28, fill='blue')
+    canvas.create_line(150, 28, 225, 86, fill='red')
     def reset():
         canvas.delete("all")
         label = Label(window, text="Player 1")
@@ -241,7 +248,8 @@ def main():
 
     # Computer choose line
     def computer_choose_lines():
-        choose_line()
+        display_line(canvas)
+        print(fixed_lines)
         if checkTriangles(machine_lines):
             messagebox.showinfo("Result: Computer lose")
             reset()
