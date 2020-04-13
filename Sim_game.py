@@ -166,6 +166,7 @@ def main():
         canvas.delete("all")
         label = Label(window, text="Player 1")
         label.place(x=20, y=250)
+        
         canvas.create_line(75, 86, 150, 28, fill='gray', dash=(4, 2))
         canvas.create_line(150, 28, 225, 86, fill='gray', dash=(4, 2))
         canvas.create_line(75, 86, 75, 144, fill='gray', dash=(4, 2))
@@ -181,6 +182,9 @@ def main():
         canvas.create_line(75, 86, 225, 144, fill='gray', dash=(4, 2))
         canvas.create_line(75, 144, 225, 86, fill='gray', dash=(4, 2))
         canvas.create_line(150, 28, 150, 202, fill='gray', dash=(4, 2))
+        canvas.create_line(75, 86, 150, 28, fill='blue')
+        canvas.create_line(150, 28, 225, 86, fill='red')
+        
 
 
     def player_choose_lines():
@@ -192,7 +196,7 @@ def main():
         move = input.get()
 
         if (move not in all_lines):
-            messagebox.showinfo("Line not available")
+            messagebox.showinfo(message = "Line not available")
         else:
             player_lines.append(move)
             if move == 'a':
@@ -241,7 +245,14 @@ def main():
                 fixed_lines[14] = 1
                 canvas.create_line(150, 28, 150, 202, fill=color)
             if checkTriangles(player_lines):
-                messagebox.showinfo("Result: Player lose")
+                print(player_lines)
+                messagebox.showinfo(title = "Result", message ="You Lost")
+                player_lines.clear()
+                machine_lines.clear()
+                player_lines.append('a')
+                machine_lines.append('b')
+                for i in range(2,len(fixed_lines)):
+                    fixed_lines[i] = 0
                 reset()
             else:
                 computer_choose_lines()
@@ -251,7 +262,14 @@ def main():
         display_line(canvas)
         print(fixed_lines)
         if checkTriangles(machine_lines):
-            messagebox.showinfo("Result: Computer lose")
+            print(machine_lines)
+            messagebox.showinfo(title = "Result", message ="You Win")
+            player_lines.clear()
+            machine_lines.clear()
+            player_lines.append('a')
+            machine_lines.append('b')
+            for i in range(2,len(fixed_lines)):
+                fixed_lines[i] = 0
             reset()
 
     # Show and action
@@ -274,4 +292,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main()  
