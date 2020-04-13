@@ -14,7 +14,7 @@ all_lines = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n
 # fixed_lines = [1,1,1,1,0,0,0,0,1,0,1,1,0,0,1]
 # player_lines = ['a','b','l','k']
 # machine_lines = ['o', 'i', 'c', 'd']
-fixed_lines = [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]
+fixed_lines = [-1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]
 player_lines = ['a']
 machine_lines = ['b']
 
@@ -51,7 +51,7 @@ def minimax(depth, isMaximizing, alpha, beta):
         best_score = 9999999999
         for i in range(len(fixed_lines)):
             if fixed_lines[i] == 0:
-                fixed_lines[i] = 1
+                fixed_lines[i] = -1
                 player_lines.append(all_lines[i])
                 line_score = minimax(depth + 1, True, alpha, beta)
                 player_lines.remove(all_lines[i])
@@ -188,64 +188,63 @@ def main():
 
 
     def player_choose_lines():
-
-        color = 'blue'
+        
         label = Label(window, text="Player")
         label.place(x=20, y=250)
 
         move = input.get()
-
-        if (move not in all_lines):
-            messagebox.showinfo(message = "Line not available")
+        if (move in player_lines) or (move in machine_lines):
+            messagebox.showwarning(title ="Warning",message = "Line have been picked. Please pick another line")
+        elif (move not in all_lines):
+            messagebox.showwarning(title ="Warning",message = "Line not available. Please pick a line from <a> to <o>")
         else:
             player_lines.append(move)
             if move == 'a':
-                fixed_lines[0] = 1
-                canvas.create_line(75, 86, 150, 28, fill=color)
+                fixed_lines[0] = -1
+                canvas.create_line(75, 86, 150, 28, fill='blue')
             elif move == 'b':
-                fixed_lines[1] = 1
-                canvas.create_line(150, 28, 225, 86, fill=color)
+                fixed_lines[1] = -1
+                canvas.create_line(150, 28, 225, 86, fill='blue')
             elif move == 'c':
-                fixed_lines[2] = 1
-                canvas.create_line(75, 86, 75, 144, fill=color)
+                fixed_lines[2] = -1
+                canvas.create_line(75, 86, 75, 144, fill='blue')
             elif move == 'd':
-                fixed_lines[3] = 1
-                canvas.create_line(225, 86, 225, 144, fill=color)
+                fixed_lines[3] = -1
+                canvas.create_line(225, 86, 225, 144, fill='blue')
             elif move == 'e':
-                fixed_lines[4] = 1
-                canvas.create_line(75, 144, 150, 202, fill=color)
+                fixed_lines[4] = -1
+                canvas.create_line(75, 144, 150, 202, fill='blue')
             elif move == 'f':
-                fixed_lines[5] = 1
-                canvas.create_line(225, 144, 150, 202, fill=color)
+                fixed_lines[5] = -1
+                canvas.create_line(225, 144, 150, 202, fill='blue')
             elif move == 'g':
-                fixed_lines[6] = 1
-                canvas.create_line(75, 86, 225, 86, fill=color)
+                fixed_lines[6] = -1
+                canvas.create_line(75, 86, 225, 86, fill='blue')
             elif move == 'h':
-                fixed_lines[7] = 1
-                canvas.create_line(75, 144, 225, 144, fill=color)
+                fixed_lines[7] = -1
+                canvas.create_line(75, 144, 225, 144, fill='blue')
             elif move == 'i':
-                fixed_lines[8] = 1
-                canvas.create_line(75, 86, 150, 202, fill=color)
+                fixed_lines[8] = -1
+                canvas.create_line(75, 86, 150, 202, fill='blue')
             elif move == 'j':
-                fixed_lines[9] = 1
-                canvas.create_line(150, 28, 225, 144, fill=color)
+                fixed_lines[9] = -1
+                canvas.create_line(150, 28, 225, 144, fill='blue')
             elif move == 'k':
-                fixed_lines[10] = 1
-                canvas.create_line(150, 28, 75, 144, fill=color)
+                fixed_lines[10] = -1
+                canvas.create_line(150, 28, 75, 144, fill='blue')
             elif move == 'l':
-                fixed_lines[11] = 1
-                canvas.create_line(225, 86, 150, 202, fill=color)
+                fixed_lines[11] = -1
+                canvas.create_line(225, 86, 150, 202, fill='blue')
             elif move == 'm':
-                fixed_lines[12] = 1
-                canvas.create_line(75, 86, 225, 144, fill=color)
+                fixed_lines[12] = -1
+                canvas.create_line(75, 86, 225, 144, fill='blue')
             elif move == 'n':
-                fixed_lines[13] = 1
-                canvas.create_line(75, 144, 225, 86, fill=color)
+                fixed_lines[13] = -1
+                canvas.create_line(75, 144, 225, 86, fill='blue')
             elif move == 'o':
-                fixed_lines[14] = 1
-                canvas.create_line(150, 28, 150, 202, fill=color)
+                fixed_lines[14] = -1
+                canvas.create_line(150, 28, 150, 202, fill='blue')
             if checkTriangles(player_lines):
-                print(player_lines)
                 messagebox.showinfo(title = "Result", message ="You Lost")
                 player_lines.clear()
                 machine_lines.clear()
@@ -262,7 +261,6 @@ def main():
         display_line(canvas)
         print(fixed_lines)
         if checkTriangles(machine_lines):
-            print(machine_lines)
             messagebox.showinfo(title = "Result", message ="You Win")
             player_lines.clear()
             machine_lines.clear()
