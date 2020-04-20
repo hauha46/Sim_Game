@@ -25,19 +25,18 @@ def checkTriangles(lines):
             return True
     return False
 
-def minimax(depth, isMaximizing, alpha, beta):
+def minimaxPruned(depth, isMaximizing, alpha, beta):
     if checkTriangles(player_lines):
         return 100 - depth
     if checkTriangles(machine_lines):
         return -100 + depth
-
     if isMaximizing:
         best_score = -9999999999
         for i in range(len(fixed_lines)):
             if fixed_lines[i] == 0:
                 fixed_lines[i] = 1
                 machine_lines.append(all_lines[i])
-                line_score = minimax(depth + 1, False, alpha, beta)
+                line_score = minimaxPruned(depth + 1, False, alpha, beta)
                 machine_lines.remove(all_lines[i])
                 fixed_lines[i] = 0
                 if line_score > best_score:
@@ -53,7 +52,7 @@ def minimax(depth, isMaximizing, alpha, beta):
             if fixed_lines[i] == 0:
                 fixed_lines[i] = -1
                 player_lines.append(all_lines[i])
-                line_score = minimax(depth + 1, True, alpha, beta)
+                line_score = minimaxPruned(depth + 1, True, alpha, beta)
                 player_lines.remove(all_lines[i])
                 fixed_lines[i] = 0
                 if line_score < best_score:
@@ -63,6 +62,39 @@ def minimax(depth, isMaximizing, alpha, beta):
                 if beta <= alpha:
                     break
         return best_score
+
+def minimax(depth, isMaximizing):
+    if checkTriangles(player_lines):
+        return 100 - depth
+    if checkTriangles(machine_lines):
+        return -100 + depth
+    if isMaximizing:
+        best_score = -9999999999
+        for i in range(len(fixed_lines)):
+            if fixed_lines[i] == 0:
+                fixed_lines[i] = 1
+                machine_lines.append(all_lines[i])
+                line_score = minimax(depth + 1, False)
+                machine_lines.remove(all_lines[i])
+                fixed_lines[i] = 0
+                if line_score > best_score:
+                    best_score = line_score
+        return best_score
+    else:
+        best_score = 9999999999
+        for i in range(len(fixed_lines)):
+            if fixed_lines[i] == 0:
+                fixed_lines[i] = -1
+                player_lines.append(all_lines[i])
+                line_score = minimax(depth + 1, True)
+                player_lines.remove(all_lines[i])
+                fixed_lines[i] = 0
+                if line_score < best_score:
+                    best_score = line_score
+        return best_score
+
+
+
 def choose_line():
     best_score = -999999999999
     line = None
@@ -71,7 +103,8 @@ def choose_line():
         if fixed_lines[i] == 0:
             fixed_lines[i] = 1
             machine_lines.append(all_lines[i])
-            line_score = minimax(0, False, -99999, 99999)
+            line_score = minimaxPruned(0, False, -99999, 99999)
+            #line_score = minimax(0, False)
             print(line_score)
             machine_lines.remove(all_lines[i])
             fixed_lines[i] = 0
